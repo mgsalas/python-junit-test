@@ -1,0 +1,30 @@
+name: Test Package
+
+on: [push]
+
+jobs:
+  unit-test:
+    name: Python Absolute JUnit
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install . pytest 
+
+      - name: Pytest
+        run: pytest --junit-xml=python-report.xml
+
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v2
+        if: always()
+        with:
+          report_paths: '**/python-report.xml'
